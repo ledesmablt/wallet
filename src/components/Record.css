@@ -1,0 +1,103 @@
+.CreateRecordPage {
+    position: absolute;
+    box-shadow: 3px 3px 5px #999;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #071a52;
+    height: 70vh;
+    min-height: 450px;
+    border-radius: 20px;
+}
+.CreateRecordForm {
+    display: flex;
+    flex-direction: column;
+}
+.CreateRecordForm h1 {
+    color: #071a52;
+    margin-bottom: 5vh;
+    margin-right: auto;
+}
+.CreateRecordForm hr {
+    border-color: #071a52;
+    border-top-width: 2px;
+    width: 40vw;
+    max-width: 600px;
+    left: 0;
+}
+
+
+.InputLabel {
+    margin-bottom: 2vh;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #071a52;
+}
+.UserInput {
+    padding: 0 0 0 5px;
+    margin: 0;
+    position: absolute;
+    left: 10rem;
+    height: 2.4rem;
+    width: 18rem;
+    font-size: 1.4rem;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #999;
+    border-radius: 3px;
+}
+
+input[class="UserInput"],
+textarea[class="UserInput"] {
+    padding: 0;
+    padding-left: 0.4rem;
+    width: 17.5rem;
+}
+
+textarea[class="UserInput"] {
+    padding-top: 2px;
+    height: calc(2.4rem - 2px);
+}
+
+.UserInput[type="number"]::-webkit-outer-spin-button,
+.UserInput[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+
+.RecordTable {
+    list-style-type: none;
+}
+  
+.RecordTable td,
+.RecordTable th {
+    padding-right: 30px;
+    text-align: left;
+}
+
+.RecordTable .isNumber {
+    text-align: right
+}
+  
+.isExpense {
+    color: #f31638;
+}
+
+
+/* Small screens */
+@media only screen and (max-width: 1400px) {
+    .CreateRecordPage {
+        width: 82vw;
+        padding: 0 2vw;
+        margin: 8vh 8vw;
+    }
+}
+
+/* Large screens */
+@media only screen and (min-width: 1400px) {
+    .CreateRecordPage {
+        width: 42vw;
+        padding: 0 2vw;
+        margin: 8vh 28vw;
+    }
+}
