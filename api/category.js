@@ -6,7 +6,7 @@ import { success, failure } from "./../libs/response-lib";
 export async function create(event) {
   const data = JSON.parse(event.body);
   const params = {
-    TableName: process.env.categoryTable,
+    TableName: "wallet-categories",
     Item: {
       userId: "default", // will integrate with cognito eventually
       categoryId: uuidv1(),
@@ -27,7 +27,7 @@ export async function create(event) {
 export async function list(event) {
   // const data = JSON.parse(event.body);
   const params = {
-    TableName: process.env.categoryTable,
+    TableName: "wallet-categories",
     KeyConditionExpression: "userId = :userId",
     ExpressionAttributeValues: {
       ":userId": "default",

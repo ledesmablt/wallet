@@ -6,10 +6,10 @@ import { success, failure } from "./../libs/response-lib";
 export async function create(event) {
   const data = JSON.parse(event.body);
   const params = {
-    TableName: process.env.transactionTable,
+    TableName: "wallet-records",
     Item: {
       userId: "default", // will integrate with cognito eventually
-      transactionId: uuidv1(),
+      recordId: uuidv1(),
       createTime: Date.now(),
       modifiedTime: Date.now(),
       type: data.type,
@@ -29,9 +29,8 @@ export async function create(event) {
 };
 
 export async function list(event) {
-  // const data = JSON.parse(event.body);
   const params = {
-    TableName: process.env.transactionTable,
+    TableName: "wallet-records",
     KeyConditionExpression: "userId = :userId",
     ExpressionAttributeValues: {
       ":userId": "default",

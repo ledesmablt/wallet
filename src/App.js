@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { StoreProvider, useStoreState, useStoreActions } from 'easy-peasy';
+import store from './stores/store';
 import logo from './logo.svg';
 import './App.css';
 import Scorecard from './components/Scorecard';
@@ -19,11 +21,17 @@ function Nav() {
 }
 
 function Overview() {
+  const [overviewValues, setOverviewValues] = useState({});
+  const records = useStoreState(state => state.records);
+  useEffect(() => {
+    setOverviewValues(records);
+  }, [records]);
+  
   return (
     <div className="Overview">
-      <Scorecard label="Balance" value="1000" />
-      <Scorecard label="Income" value="2000" />
-      <Scorecard label="Expenses" value="1000" />
+      <Scorecard label="Balance" value={overviewValues.balance} />
+      <Scorecard label="Income" value={overviewValues.income} />
+      <Scorecard label="Expenses" value={overviewValues.expenses} />
     </div>
   );
 }
@@ -37,11 +45,22 @@ function RecordsPreview() {
   )
 }
 
+function InitialApiCalls() {
+  // fill "items"
+  const getCategories = useStoreActions(actions => actions.categories.get);
+  const getRecords = useStoreActions(actions => actions.records.get);
+  getCategories();
+  getRecords();
+  return null;
+}
+
 function App() {
   const [createRecord, setCreateRecord] = useState(false);
 
   const todayString = (new Date()).toLocaleDateString();
   return (
+  <StoreProvider store={store}>
+    <InitialApiCalls />
     <div className="App">
       <Nav />
       <main>
@@ -49,21 +68,20 @@ function App() {
         <h2 className="App-greeting-sub">{ todayString }</h2>
         <Overview />
         <RecordsPreview />
-        {
-          <div className="CreateRecordsContainer">
-            <CreateRecordButton
-                onClick={() => setCreateRecord(!createRecord)}
+        <div className="CreateRecordsContainer">
+          <CreateRecordButton
+              onClick={() => setCreateRecord(!createRecord)}
+          />
+          <div className={(createRecord ? "fadeIn" : "fadeOut") + " BlurBackdrop"}>
+            <CreateRecordPage
+              subClassName={createRecord ? "slideIn" : "slideOut"}
+              onCancel={() => setCreateRecord(!createRecord)}
             />
-            <div className={(createRecord ? "fadeIn" : "fadeOut") + " BlurBackdrop"}>
-              <CreateRecordPage
-                subClassName={createRecord ? "slideIn" : "slideOut"}
-                onCancel={() => setCreateRecord(!createRecord)}
-              />
-            </div>
           </div>
-        }
+        </div>
       </main>
     </div>
+  </StoreProvider>
   );
 }
 

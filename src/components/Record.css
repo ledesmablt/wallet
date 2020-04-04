@@ -75,6 +75,10 @@ textarea[class="UserInput"] {
     text-align: left;
 }
 
+.RecordTable th:first-child {
+    width: 150px;
+}
+
 .RecordTable .isNumber {
     text-align: right
 }
