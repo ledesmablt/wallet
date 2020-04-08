@@ -67,22 +67,37 @@ textarea[class="UserInput"] {
 
 .RecordTable {
     list-style-type: none;
+    border-spacing: 0 0.1rem;
+    width: 100%;
 }
   
 .RecordTable td,
 .RecordTable th {
     padding-right: 30px;
+    padding-left: 10px;
     text-align: left;
 }
 
 .RecordTable th:first-child {
-    width: 150px;
+    width: 9rem;
 }
 
-.RecordTable .isNumber {
-    text-align: right
+/* align amount to right */
+.RecordTable th:nth-child(2),
+.RecordTable td:nth-child(2) {
+    text-align: right;
+    width: 5rem;
 }
-  
+
+.RecordTable tbody > * {
+    transition: all 0.1s 0.04s ease;
+}
+.RecordTable tbody tr:hover {
+    background-color: #c8ffb2;
+    cursor: pointer;
+    box-shadow: 1px 1px 3px #999;
+}
+
 .isExpense {
     color: #f31638;
 }

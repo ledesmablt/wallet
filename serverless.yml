@@ -13,25 +13,17 @@ provider:
   stage: dev
   region: ap-southeast-1
   memorySize: 128
-
-iamRoleStatements:
-  - Effect: Allow
-    Action:
-      - logs:CreateLogGroup
-      - logs:CreateLogStream
-      - logs:PutLogEvents
-    Resource: "*"
-
-  - Effect: Allow
-    Action:
-      - dynamodb:DescribeTable
-      - dynamodb:Query
-      - dynamodb:Scan
-      - dynamodb:GetItem
-      - dynamodb:PutItem
-      - dynamodb:UpdateItem
-      - dynamodb:DeleteItem
-    Resource: "arn:aws:dynamodb:ap-southeast-1:*:*"
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - logs:CreateLogGroup
+        - logs:CreateLogStream
+        - logs:PutLogEvents
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource: "arn:aws:dynamodb:ap-southeast-1:*:*"
 
 functions:
   createCategory:
@@ -61,6 +53,27 @@ functions:
       - http:
           path: record/list
           method: get
+          cors: true
+  findRecord:
+    handler: api/record.find
+    events:
+      - http:
+          path: record/find
+          method: post
+          cors: true
+  modifyRecord:
+    handler: api/record.modify
+    events:
+      - http:
+          path: record/modify
+          method: post
+          cors: true
+  deleteRecord:
+    handler: api/record.deleteRecord
+    events:
+      - http:
+          path: record/delete
+          method: post
           cors: true
 
 

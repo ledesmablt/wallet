@@ -6,7 +6,7 @@ import './App.css';
 import Scorecard from './components/Scorecard';
 import { RecordTable } from './components/Record';
 import { CreateRecordButton } from './components/Buttons';
-import { CreateRecordPage } from './components/Record';
+import { CreateRecordPage, ModifyRecordPage } from './components/Record';
 
 function Nav() {
   return (
@@ -54,13 +54,12 @@ function InitialApiCalls() {
   return null;
 }
 
-function App() {
-  const [createRecord, setCreateRecord] = useState(false);
-
+function Main() {
+  const currentAppState = useStoreState(state => state.app.currentState);
+  const updateAppState = useStoreActions(actions => actions.app.updateState);
   const todayString = (new Date()).toLocaleDateString();
+
   return (
-  <StoreProvider store={store}>
-    <InitialApiCalls />
     <div className="App">
       <Nav />
       <main>
@@ -70,17 +69,32 @@ function App() {
         <RecordsPreview />
         <div className="CreateRecordsContainer">
           <CreateRecordButton
-              onClick={() => setCreateRecord(!createRecord)}
+              onClick={() => updateAppState('createRecord')}
           />
-          <div className={(createRecord ? "fadeIn" : "fadeOut") + " BlurBackdrop"}>
+          <div className={
+              (["createRecord", "modifyRecord"].includes(currentAppState) ? "fadeIn" : "fadeOut") + " BlurBackdrop"
+            }>
             <CreateRecordPage
-              subClassName={createRecord ? "slideIn" : "slideOut"}
-              onCancel={() => setCreateRecord(!createRecord)}
+              subClassName={currentAppState === "createRecord" ? "slideIn" : "slideOut"}
+              onCancel={() => updateAppState('normal')}
+            />
+            <ModifyRecordPage
+              subClassName={currentAppState === "modifyRecord" ? "slideIn" : "slideOut"}
+              onCancel={() => updateAppState('normal')}
             />
           </div>
         </div>
       </main>
     </div>
+  )
+}
+
+
+function App() {
+  return (
+  <StoreProvider store={store}>
+    <InitialApiCalls />
+    <Main />
   </StoreProvider>
   );
 }

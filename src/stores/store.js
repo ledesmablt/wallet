@@ -1,7 +1,14 @@
 import { createStore, action, computed, thunk } from 'easy-peasy';
 import axios from 'axios';
 
-const apiUrl = `${process.env.REACT_APP_CORS_PROXY || ""}${process.env.REACT_APP_APIURL}/${process.env.REACT_APP_STAGE}/`;
+const apiUrl = `${process.env.REACT_APP_CORS_PROXY || ""}${process.env.REACT_APP_APIURL}`;
+
+const appModel = {
+    currentState: 'default',
+    updateState: action((state, newState) => {
+        state.currentState = newState;
+    }),
+};
 
 const recordsModel = {
     items: [],
@@ -22,6 +29,44 @@ const recordsModel = {
             console.error(err);
             alert('Something went wrong. Please try again later.');
         });
+    }),
+    modify: thunk(async (actions, payload) => {
+        await axios.post(
+            apiUrl + 'record/modify', payload
+        ).then(res => {
+            alert('Your record has been modified!');
+            actions.get();
+        }).catch(err => {
+            console.error(err);
+            alert('Something went wrong. Please try again later.');
+        });
+    }),
+    delete: thunk(async (actions, payload) => {
+        await axios.post(
+            apiUrl + 'record/delete', payload
+        ).then(res => {
+            alert('Your record has been deleted.');
+            actions.get();
+        }).catch(err => {
+            console.error(err);
+            alert('Something went wrong. Please try again later.');
+        });
+    }),
+
+    // for record creation
+    current: {},
+    updateCurrent: action((state, newRecord) => {
+        state.current = newRecord;
+        state.creating = newRecord;
+    }),
+    creating: {
+        type: "Expense",
+        categoryName: "Food",
+        amount: "",
+        notes: ""
+    },
+    updateCreating: action((state, newRecord) => {
+        state.creating = newRecord;
     }),
 
     // computed
@@ -59,6 +104,7 @@ const categoriesModel = {
 };
 
 const store = createStore({
+    app: appModel,
     records: recordsModel,
     categories: categoriesModel
 });

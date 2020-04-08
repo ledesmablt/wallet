@@ -2,47 +2,124 @@ import React, { useState } from 'react';
 import { useStoreState, useStoreActions } from 'easy-peasy';
 import './Record.css';
 import { useTable } from 'react-table';
-import { ApproveRejectButtons } from './Buttons';
+import { ApproveRejectDeleteButtons } from './Buttons';
 
 const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-const tzOptions = {timezone: zone};
+const tzOptions = {timeZone: zone};
 const todayFormatted = (new Date()).toLocaleDateString("en-US", tzOptions);
 
-export function CreateRecordPage({ onCancel, subClassName }) {
-  const [type, setType] = useState("Expense");
-  const [category, setCategory] = useState("Food");
-  const [amount, setAmount] = useState("");
-  const [notes, setNotes] = useState("");
 
-  const categoryList = useStoreState(state => state.categories.items);
+export function CreateRecordPage({ subClassName }) {
+  return (
+    <RecordPage
+      submissionType="create"
+      subClassName={subClassName + " Create "}
+    />
+  )
+}
+
+export function ModifyRecordPage({ subClassName }) {
+  return (
+    <RecordPage
+      submissionType="modify"
+      subClassName={subClassName + " Modify "}
+    />
+  )
+}
+
+
+function RecordPage({ submissionType, subClassName }) {
+  const [updated, setUpdated] = useState(false);
+
+  // current record (what the user clicked on, if modifying)
+  var currentRecord = useStoreState(state => state.records.current);
+  const updateCurrentRecord = useStoreActions(actions => actions.records.updateCurrent);
+
+  // current creating record (form input)
+  var currentCreatingRecord = useStoreState(state => state.records.creating);
+  const updateCreatingRecord = useStoreActions(actions => actions.records.updateCreating);
+  
+  // helper store actions
   const createRecord = useStoreActions(actions => actions.records.create);
+  const modifyRecord = useStoreActions(actions => actions.records.modify);
+  const deleteRecord = useStoreActions(actions => actions.records.delete);
+  const updateAppState = useStoreActions(actions => actions.app.updateState);
+  
+  // form input variables
+  const categoryList = useStoreState(state => state.categories.items);
+  const { type, categoryName, amount, notes } = currentCreatingRecord;
+  const categoryId = (categoryList.find(obj => obj.categoryName === categoryName) || { categoryId: "N/A"}).categoryId;
 
-  const submitToApi = (event) => {
+  // update store when fomr is updated
+  const handleUpdate = (event) => {
+    const { name, value } = event.target
+    currentCreatingRecord[name] = value;
+    updateCreatingRecord(currentCreatingRecord);
+    setUpdated(!updated);
+  }
+  
+  const handleExit = () => {
+    // reset record and app to default
+    setTimeout(() => {
+      updateCurrentRecord({});
+      updateCreatingRecord({
+        type: type,
+        categoryName: categoryName
+      });
+    }, 700);
+    updateAppState('default');
+  }
+  
+  const createRecordApi = (event) => {
+    // create a new record in the API
     event.preventDefault();
-    const categoryId = categoryList.find(obj => obj.categoryName === category).categoryId;
     const submission = {
       type: type,
       categoryId: categoryId,
-      amount: type === "Income" ? parseInt(amount) : - parseInt(amount),
-      notes: notes !== "" ? notes : undefined
+      amount: type === "Income" ? Math.abs(amount) : - Math.abs(amount),
+      notes: notes
     };
     createRecord(submission);
     handleExit();
   };
 
-  const handleExit = () => {
-    // reset values after transition ends
-    setTimeout(() => {
-      setAmount("");
-      setNotes("");
-    }, 700);
-    onCancel();
-    return false;
+  const modifyRecordApi = (event) => {
+    // modify an existing record if there are changes (based on recordId)
+    event.preventDefault();
+    const submission = {
+      recordId: currentRecord.recordId,
+      type: type,
+      categoryId: categoryId,
+      amount: type === "Income" ? Math.abs(amount) : - Math.abs(amount),
+      notes: notes
+    };
+    modifyRecord(submission);
+    handleExit();
+  };
+
+  const deleteRecordApi = (event) => {
+    // delete record from database
+    event.preventDefault();
+    deleteRecord({ recordId: currentRecord.recordId });
+    handleExit();
+  }
+  
+
+  let executeSubmission;
+  switch (submissionType) {
+    case 'create':
+      executeSubmission = createRecordApi;
+      break;
+    case 'modify':
+      executeSubmission = modifyRecordApi;
+      break;
+    default:
+      break;
   };
 
   return (
     <div className={subClassName + " CreateRecordPage"}>
-      <form className="CreateRecordForm" onSubmit={submitToApi}>
+      <form className="CreateRecordForm" onSubmit={executeSubmission}>
         <h1>Create a new record <hr /></h1>
         <label className="InputLabel">
           Type
@@ -51,7 +128,7 @@ export function CreateRecordPage({ onCancel, subClassName }) {
             value={type}
             className="UserInput"
             name="type"
-            onChange={ e => setType(e.target.value) }
+            onChange={(event) => handleUpdate(event)}
           >
             {
               ["Income", "Expense"]
@@ -63,10 +140,10 @@ export function CreateRecordPage({ onCancel, subClassName }) {
           Category
           <select
             required
-            value={category}
+            value={categoryName}
             className="UserInput"
             name="categoryName"
-            onChange={ e => setCategory(e.target.value) }
+            onChange={(event) => handleUpdate(event)}
           >
             {
               categoryList
@@ -78,26 +155,27 @@ export function CreateRecordPage({ onCancel, subClassName }) {
           Amount
           <input
             required
-            value={amount}
+            value={amount === "undefined" ? amount || "" : Math.abs(amount)}
             className="UserInput"
             name="amount"
             type="number"
             min="1"
-            onChange={ e => setAmount(e.target.value) }
+            onChange={(event) => handleUpdate(event)}
           />
         </label>
         <label className="InputLabel">
           Notes
           <textarea
-            value={notes}
+            value={notes || ""}
             className="UserInput"
             name="notes"
             type="text"
-            onChange={ e => setNotes(e.target.value) }
+            onChange={(event) => handleUpdate(event)}
           />
         </label>
-        <ApproveRejectButtons
+        <ApproveRejectDeleteButtons
           rejectHandler={handleExit}
+          deleteHandler={deleteRecordApi}
         />
       </form>
     </div>
@@ -118,7 +196,10 @@ function formatDate(dateTime) {
 }
 
 
-export function RecordTable(props) {
+export function RecordTable() {
+  const updateAppState = useStoreActions(actions => actions.app.updateState);
+  const updateCurrentRecord = useStoreActions(actions => actions.records.updateCurrent);
+
   // column headers mapped to records dict keys
   const columns = React.useMemo(
       () => [
@@ -129,10 +210,10 @@ export function RecordTable(props) {
       ]
   , []);
 
-  // records sorted by createTime desc
+  // last 10 records sorted by createTime desc
   const categoryList = useStoreState(state => state.categories.items);
   const records = useStoreState(
-    state => state.records.items
+    state => state.records.items.slice(0,10)
   ).map(record => {
     const categoryName = categoryList.find(cat => cat.categoryId === record.categoryId);
     return categoryName === undefined ? "N/A" : {
@@ -171,11 +252,26 @@ export function RecordTable(props) {
         {rows.map(row => {
           prepareRow(row)
           return (
-            <tr {...row.getRowProps()}>
+            <tr
+              recordid={row.original.recordId}
+              onClick={() => {
+                const foundRecord = records.find(rec => rec.recordId === row.original.recordId);
+                updateCurrentRecord({
+                  type: foundRecord.type,
+                  categoryName: foundRecord.categoryName,
+                  amount: foundRecord.amount,
+                  notes: foundRecord.notes,
+                  categoryId: foundRecord.categoryId,
+                  recordId: foundRecord.recordId
+                });
+                updateAppState('modifyRecord');
+              }}
+              {...row.getRowProps()}
+            >
             {row.cells.map(cell => {
               let cellProps = cell.getCellProps();
               if ((cell.column.Header) === "Amount") {
-                const extProps = (cell.value >= 0 ? {className: "isNumber"} : { className: "isNumber isExpense" })
+                const extProps = (cell.value < 0 ? {className: "isExpense"} : null)
                 cellProps = Object.assign({}, cellProps, extProps)
               }
               return <td {...cellProps}>{cell.render('Cell')}</td>
