@@ -1,11 +1,13 @@
 :root {
   font-size: 16px;
   background-color: #fdfdfd;
+  --dark-primary: #1d2e62;
+  --highlight-primary: #a7ff83;
 }
 
 
 .Nav {
-  background-color: #a7ff83;
+  background-color: var(--highlight-primary);
   position: fixed;
   display: flex;
   top: 0;
@@ -22,15 +24,18 @@
 .Nav-url {
   padding-top: 2px;
   height: 28px;
-  color: #1d2e62;
+  color: var(--dark-primary);
   font-weight: bold;
   text-decoration: none;
 }
 
+.section-container {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
 
 .section-header {
   font-size: 1.5rem;
-  margin-top: 80px;
 }
 
 .App-greeting {

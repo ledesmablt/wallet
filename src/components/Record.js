@@ -14,6 +14,7 @@ export function CreateRecordPage({ subClassName }) {
     <RecordPage
       submissionType="create"
       subClassName={subClassName + " Create "}
+      headerMessage="Create a new record"
     />
   )
 }
@@ -23,12 +24,13 @@ export function ModifyRecordPage({ subClassName }) {
     <RecordPage
       submissionType="modify"
       subClassName={subClassName + " Modify "}
+      headerMessage="Modify a record"
     />
   )
 }
 
 
-function RecordPage({ submissionType, subClassName }) {
+function RecordPage({ submissionType, subClassName, headerMessage }) {
   const [updated, setUpdated] = useState(false);
 
   // current record (what the user clicked on, if modifying)
@@ -57,6 +59,17 @@ function RecordPage({ submissionType, subClassName }) {
     updateCreatingRecord(currentCreatingRecord);
     setUpdated(!updated);
   }
+
+  const formatAmount = (amount) => {
+    if ([undefined, ""].includes(amount)) {
+      return undefined;
+    } else {
+      return type === "Income" ? Math.abs(amount) : - Math.abs(amount)
+    }
+  }
+  const formatNotes = (notes) => {
+    return notes === "" ? undefined : notes;
+  }
   
   const handleExit = () => {
     // reset record and app to default
@@ -64,7 +77,9 @@ function RecordPage({ submissionType, subClassName }) {
       updateCurrentRecord({});
       updateCreatingRecord({
         type: type,
-        categoryName: categoryName
+        categoryName: categoryName,
+        amount: "",
+        notes: ""
       });
     }, 700);
     updateAppState('default');
@@ -76,8 +91,8 @@ function RecordPage({ submissionType, subClassName }) {
     const submission = {
       type: type,
       categoryId: categoryId,
-      amount: type === "Income" ? Math.abs(amount) : - Math.abs(amount),
-      notes: notes
+      amount: formatAmount(amount),
+      notes: formatNotes(notes)
     };
     createRecord(submission);
     handleExit();
@@ -90,8 +105,8 @@ function RecordPage({ submissionType, subClassName }) {
       recordId: currentRecord.recordId,
       type: type,
       categoryId: categoryId,
-      amount: type === "Income" ? Math.abs(amount) : - Math.abs(amount),
-      notes: notes
+      amount: formatAmount(amount),
+      notes: formatNotes(notes)
     };
     modifyRecord(submission);
     handleExit();
@@ -120,7 +135,7 @@ function RecordPage({ submissionType, subClassName }) {
   return (
     <div className={subClassName + " CreateRecordPage"}>
       <form className="CreateRecordForm" onSubmit={executeSubmission}>
-        <h1>Create a new record <hr /></h1>
+        <h1>{headerMessage} <hr /></h1>
         <label className="InputLabel">
           Type
           <select
@@ -155,7 +170,7 @@ function RecordPage({ submissionType, subClassName }) {
           Amount
           <input
             required
-            value={amount === "undefined" ? amount || "" : Math.abs(amount)}
+            value={([undefined, ""].includes(amount)) ? amount || "" : Math.abs(amount)}
             className="UserInput"
             name="amount"
             type="number"
@@ -196,7 +211,7 @@ function formatDate(dateTime) {
 }
 
 
-export function RecordTable() {
+export function RecordTable({ show }) {
   const updateAppState = useStoreActions(actions => actions.app.updateState);
   const updateCurrentRecord = useStoreActions(actions => actions.records.updateCurrent);
 
@@ -213,7 +228,7 @@ export function RecordTable() {
   // last 10 records sorted by createTime desc
   const categoryList = useStoreState(state => state.categories.items);
   const records = useStoreState(
-    state => state.records.items.slice(0,10)
+    state => state.records.items
   ).map(record => {
     const categoryName = categoryList.find(cat => cat.categoryId === record.categoryId);
     return categoryName === undefined ? "N/A" : {
@@ -223,7 +238,7 @@ export function RecordTable() {
     }
   }).sort(
     (rec1, rec2) => rec2.createTime - rec1.createTime
-  );
+  ).slice(0, show)
 
   // initialize react-table vars
   const data = React.useMemo(
