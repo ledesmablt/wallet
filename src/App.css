@@ -7,14 +7,14 @@
 
 
 .Nav {
-  background-color: var(--highlight-primary);
-  position: fixed;
-  display: flex;
+  margin: 0;
   top: 0;
   left: 0;
-  justify-content: space-between;
+  position: fixed;
+  display: flex;
   align-items: center;
-  margin: 0;
+  justify-content: space-between;
+  background-color: var(--highlight-primary);
 }
 
 .Nav, .Nav-logo {
@@ -24,9 +24,9 @@
 .Nav-url {
   padding-top: 2px;
   height: 28px;
-  color: var(--dark-primary);
   font-weight: bold;
   text-decoration: none;
+  color: var(--dark-primary);
 }
 
 .section-container {
@@ -34,16 +34,12 @@
   margin-bottom: 40px;
 }
 
-.section-header {
-  font-size: 1.5rem;
-}
-
-.App-greeting {
+.section-container h1 {
   font-size: 2rem;
   line-height: 1rem;
 }
 
-.App-greeting-sub {
+.section-container h2 {
   font-size: 1.5rem;
   line-height: 1.5rem;
 }
@@ -56,14 +52,14 @@
 }
 
 .BlurBackdrop {
-  position: fixed;
+  bottom: 0;
   padding: 0;
   margin: 0;
   opacity: 0;
-  bottom: 0;
-  z-index: -1;
+  position: fixed;
   height: calc(100vh - 30px);
   width: 100vw;
+  z-index: -1;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
@@ -103,7 +99,14 @@
 }
 
 
-/* Small screens */
+/* Small screens (probably not mobile friendly) */
+@media only screen and (max-width: 768px) {
+  :root {
+    font-size: 12px;
+  }
+}
+
+/* Medium screens */
 @media only screen and (max-width: 1400px) {
   main > * {
     padding: 2px 10vw;

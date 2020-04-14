@@ -5,14 +5,14 @@
 }
 
 .Round {
-  border-radius: 100%;
   width: 3rem;
+  border-radius: 100%;
   font-size: 2rem;
 }
 
 .Oval {
-  border-radius: 8px;
   width: 5rem;
+  border-radius: 8px;
   font-size: 1.6rem;
   background-color: var(--delete-color);
 }
@@ -29,8 +29,8 @@
 .ButtonsContainer > * {
   padding: 0;
   margin: 0 0 0 20px;
-  border: none;
   height: 3rem;
+  border: none;
   color: white;
   font-weight: bold;
   box-shadow: 2px 2px 3px #999;
@@ -42,7 +42,7 @@
 }
 
 .CreateRecordButton, .ApproveButton {
-    background-color: var(--approve-color);
+  background-color: var(--approve-color);
 }
 
 .CreateRecordButton {
@@ -56,10 +56,10 @@
 
 /* Small screens */
 @media only screen and (max-width: 1400px) {
-    .CreateRecordButton {
-      right: 10vw;
-    }
+  .CreateRecordButton {
+    right: 10vw;
   }
+}
   
 /* Large screens */
 @media only screen and (min-width: 1400px) {

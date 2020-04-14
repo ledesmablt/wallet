@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useStoreState, useStoreActions } from 'easy-peasy';
-import './Record.css';
 import { useTable } from 'react-table';
 import { ApproveRejectDeleteButtons } from './Buttons';
+import './Record.css';
 
 const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 const tzOptions = {timeZone: zone};
@@ -52,7 +52,7 @@ function RecordPage({ submissionType, subClassName, headerMessage }) {
   const { type, categoryName, amount, notes } = currentCreatingRecord;
   const categoryId = (categoryList.find(obj => obj.categoryName === categoryName) || { categoryId: "N/A"}).categoryId;
 
-  // update store when fomr is updated
+  // update store when form is updated
   const handleUpdate = (event) => {
     const { name, value } = event.target
     currentCreatingRecord[name] = value;
@@ -64,7 +64,7 @@ function RecordPage({ submissionType, subClassName, headerMessage }) {
     if ([undefined, ""].includes(amount)) {
       return undefined;
     } else {
-      return type === "Income" ? Math.abs(amount) : - Math.abs(amount)
+      return type === "Income" ? Math.abs(amount) : - Math.abs(amount);
     }
   }
   const formatNotes = (notes) => {
@@ -199,15 +199,15 @@ function RecordPage({ submissionType, subClassName, headerMessage }) {
 
 
 function formatDate(dateTime) {
-  const dtFormatted = dateTime.toLocaleDateString()
+  const dtFormatted = dateTime.toLocaleDateString();
   const dateDiff = parseInt((new Date(todayFormatted)) - (new Date(dtFormatted))) / (1000 * 60 * 60 * 24);
   const timestamp = dateTime.toLocaleTimeString("en-US", tzOptions);
   const formattedTimestamp = timestamp.split(':').slice(0,2).join(':') + ' ' + timestamp.split(' ')[1];
   return (dateDiff <= 1)
-      ? `${dateDiff === 0 ? "Today" : "Yesterday"}, ${formattedTimestamp}`
-      : (dateDiff <= 7)
-          ? `${dateDiff} days ago`
-          : dateTime.toDateString("en-US", tzOptions)
+    ? `${dateDiff === 0 ? "Today" : "Yesterday"}, ${formattedTimestamp}`
+    : (dateDiff <= 7)
+        ? `${dateDiff} days ago`
+        : dateTime.toDateString("en-US", tzOptions)
 }
 
 
@@ -235,10 +235,10 @@ export function RecordTable({ show }) {
       ...record,
       categoryName: categoryName.categoryName,
       createTimeFormatted: formatDate(new Date(record.createTime))
-    }
+    };
   }).sort(
     (rec1, rec2) => rec2.createTime - rec1.createTime
-  ).slice(0, show)
+  ).slice(0, show);
 
   // initialize react-table vars
   const data = React.useMemo(
@@ -250,8 +250,10 @@ export function RecordTable({ show }) {
     headerGroups,
     rows,
     prepareRow,
-  } = useTable({ columns, data })
+  } = useTable({ columns, data });
 
+
+  // mostly boilerplat from react-table with some 
   return (
     <table className="RecordTable" {...getTableProps()}>
       <thead>
@@ -270,14 +272,9 @@ export function RecordTable({ show }) {
             <tr
               recordid={row.original.recordId}
               onClick={() => {
-                const foundRecord = records.find(rec => rec.recordId === row.original.recordId);
+                const { type, categoryName, amount, notes, categoryId, recordId } = records.find(rec => rec.recordId === row.original.recordId);
                 updateCurrentRecord({
-                  type: foundRecord.type,
-                  categoryName: foundRecord.categoryName,
-                  amount: foundRecord.amount,
-                  notes: foundRecord.notes,
-                  categoryId: foundRecord.categoryId,
-                  recordId: foundRecord.recordId
+                  type, categoryName, amount, notes, categoryId, recordId
                 });
                 updateAppState('modifyRecord');
               }}
@@ -285,14 +282,14 @@ export function RecordTable({ show }) {
             >
             {row.cells.map(cell => {
               let cellProps = cell.getCellProps();
-              if ((cell.column.Header) === "Amount") {
-                const extProps = (cell.value < 0 ? {className: "isExpense"} : null)
-                cellProps = Object.assign({}, cellProps, extProps)
+              if (cell.column.Header === "Amount") {
+                const extProps = (cell.value < 0 ? {className: "isExpense"} : null);
+                cellProps = Object.assign({}, cellProps, extProps);
               }
               return <td {...cellProps}>{cell.render('Cell')}</td>
             })}
           </tr>
-        )
+        );
       })}
     </tbody>
   </table>

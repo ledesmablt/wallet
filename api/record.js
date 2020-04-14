@@ -4,7 +4,7 @@ import { success, failure } from "./../libs/response-lib";
 
 
 export async function create(event) {
-  const data = JSON.parse(event.body);
+  const { type, categoryId, amount, notes } = JSON.parse(event.body);
   const params = {
     TableName: "wallet-records",
     Item: {
@@ -12,10 +12,10 @@ export async function create(event) {
       recordId: uuidv1(),
       createTime: Date.now(),
       modifiedTime: Date.now(),
-      type: data.type,
-      categoryId: data.categoryId,
-      amount: data.amount,
-      notes: data.notes
+      type: type,
+      categoryId: categoryId,
+      amount: amount,
+      notes: notes
     }
   };
   try {

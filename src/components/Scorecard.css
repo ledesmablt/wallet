@@ -1,21 +1,21 @@
 .Scorecard {
-    flex: 1;
-    height: 20vh;
-    min-height: 200px;
-    border: 1px;
-    border-style: solid;
-    border-color: black;
-    border-radius: 0.5rem;
-    padding: 0.5rem;
+  flex: 1;
+  padding: 0.5rem;
+  height: 20vh;
+  min-height: 200px;
+  border: 1px;
+  border-style: solid;
+  border-color: black;
+  border-radius: 0.5rem;
 }
 
 .Scorecard-label {
-    margin: 0;
-    padding: 0;
-    color: #2c2c2c;
+  margin: 0;
+  padding: 0;
+  color: #2c2c2c;
 }
 
 .Scorecard-value {
-    font-size: 3rem;
-    text-align: center;
+  font-size: 3rem;
+  text-align: center;
 }

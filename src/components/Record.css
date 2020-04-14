@@ -1,122 +1,123 @@
 .CreateRecordPage {
-    position: absolute;
-    box-shadow: 3px 3px 5px #999;
-    border-style: solid;
-    border-width: 1px;
-    border-color: #071a52;
-    height: 70vh;
-    min-height: 450px;
-    border-radius: 20px;
+  position: absolute;
+  height: 70vh;
+  min-height: 450px;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 20px;
+  border-color: #071a52;
+  box-shadow: 3px 3px 5px #999;
 }
+
 .CreateRecordForm {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 .CreateRecordForm h1 {
-    color: #071a52;
-    margin-bottom: 5vh;
-    margin-right: auto;
+  margin-bottom: 5vh;
+  margin-right: auto;
+  color: #071a52;
 }
 .CreateRecordForm hr {
-    border-color: #071a52;
-    border-top-width: 2px;
-    width: 40vw;
-    max-width: 600px;
-    left: 0;
+  left: 0;
+  width: 40vw;
+  max-width: 600px;
+  border-top-width: 2px;
+  border-color: #071a52;
 }
 
 
 .InputLabel {
-    margin-bottom: 2vh;
-    font-size: 1.4rem;
-    font-weight: bold;
-    color: #071a52;
+  margin-bottom: 2vh;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #071a52;
 }
 .UserInput {
-    padding: 0 0 0 5px;
-    margin: 0;
-    position: absolute;
-    left: 10rem;
-    height: 2.4rem;
-    width: 18rem;
-    font-size: 1.4rem;
-    border-style: solid;
-    border-width: 1px;
-    border-color: #999;
-    border-radius: 3px;
+  position: absolute;
+  left: 10rem;
+  margin: 0;
+  padding: 0 0 0 5px;
+  height: 2.4rem;
+  width: 18rem;
+  font-size: 1.4rem;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 3px;
+  border-color: #999;
 }
 
 input[class="UserInput"],
 textarea[class="UserInput"] {
-    padding: 0;
-    padding-left: 0.4rem;
-    width: 17.5rem;
+  padding: 0;
+  padding-left: 0.4rem;
+  width: 17.5rem;
 }
 
 textarea[class="UserInput"] {
-    padding-top: 2px;
-    height: calc(2.4rem - 2px);
+  padding-top: 2px;
+  height: calc(2.4rem - 2px);
 }
 
 .UserInput[type="number"]::-webkit-outer-spin-button,
 .UserInput[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 
 .RecordTable {
-    list-style-type: none;
-    border-spacing: 0 0.1rem;
-    width: 100%;
+  list-style-type: none;
+  border-spacing: 0 0.1rem;
+  width: 100%;
 }
   
 .RecordTable td,
 .RecordTable th {
-    padding-right: 30px;
-    padding-left: 10px;
-    text-align: left;
+  padding-right: 30px;
+  padding-left: 10px;
+  text-align: left;
 }
 
 .RecordTable th:first-child {
-    width: 9rem;
+  width: 9rem;
 }
 
 /* align amount to right */
 .RecordTable th:nth-child(2),
 .RecordTable td:nth-child(2) {
-    text-align: right;
-    width: 5rem;
+  text-align: right;
+  width: 5rem;
 }
 
 .RecordTable tbody > * {
-    transition: all 0.1s 0.04s ease;
+  transition: all 0.1s 0.04s ease;
 }
 .RecordTable tbody tr:hover {
-    background-color: #c8ffb2;
-    cursor: pointer;
-    box-shadow: 1px 1px 3px #999;
+  background-color: #c8ffb2;
+  cursor: pointer;
+  box-shadow: 1px 1px 3px #999;
 }
 
 .isExpense {
-    color: #f31638;
+  color: #f31638;
 }
 
 
 /* Small screens */
 @media only screen and (max-width: 1400px) {
-    .CreateRecordPage {
-        width: 82vw;
-        padding: 0 2vw;
-        margin: 8vh 8vw;
-    }
+  .CreateRecordPage {
+    width: 82vw;
+    padding: 0 2vw;
+    margin: 8vh 8vw;
+  }
 }
 
 /* Large screens */
 @media only screen and (min-width: 1400px) {
-    .CreateRecordPage {
-        width: 42vw;
-        padding: 0 2vw;
-        margin: 8vh 28vw;
-    }
+  .CreateRecordPage {
+    width: 42vw;
+    padding: 0 2vw;
+    margin: 8vh 28vw;
+  }
 }

@@ -25,7 +25,6 @@ export async function create(event) {
 };
 
 export async function list(event) {
-  // const data = JSON.parse(event.body);
   const params = {
     TableName: "wallet-categories",
     KeyConditionExpression: "userId = :userId",

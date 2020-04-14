@@ -26,7 +26,7 @@ export function ApproveRejectDeleteButtons({ approveHandler, rejectHandler, dele
   }
 }
 
-export function CreateRecordButton({ onClick}) {
+export function CreateRecordButton({ onClick }) {
   return (
     <div className="ButtonsContainer">
       <button className="CreateRecordButton Round" onClick={onClick}>
